@@ -1,0 +1,62 @@
+Standard Procedure of Running WRF Regional Climate Simulation using PGW method
+
+Zhe Zhang
+2017-08-21
+
+The purpose of this article is to introduce the methods and procedures used to run WRF simulation with PGW methods. A few scripts of submitting jobs and prepare PGW forcing and post-processing raw output are contributed by Liang Chen, Sopan Kurkute and Kyoko Ikeda, including (runungrib, runmetgrid, runreal, runwrf, generate_pgw_metgrid, wrf2d, wrf3d post-script, check output scripts (not available yet)) (namelist can also be found on my home directory, or Liang’s work directory)
+
+First I will introduce the general procedure of running WRF and in the end I will attach additional scripts and detail computational time for each step. 
+
+Precompiled WPS and WRF on Cheyenne
+the version we are using is V3.6.1, one can copy or link the precompiled version from ~wrfhelp/PRE_COMPILE/WPS -WRF to the directory in scratch
+
+WPS
+1.1 Run geogrid.exe: Given namelist lat, lon, grid points of the domain for 4-km grid spacing, should be very quick.
+## this step can be passed, as the geo_em.d01.nc file has already been created, please find in:
+## /glade/p/work/zhezhang/CA4KM/domain
+
+1.2 Run ungrib.exe: For WRF simulation, initial and boundary conditions are used from ERA-interim reanalysis data on /glade/p/rda/data/ds627.0. Note that for ERA-interim data, the forcing of upper layer and surface forcing are archived separately that will need two ungrib steps to finish this work.
+## please see the script runungrib.csh 
+## edit the simulation time in namelist.wps_erai4s and _erai4p
+## run runungrib.csh
+## note that for ungrib.exe, this program is non-mpi-able, which means can only use ./ to execute 
+## it, rather than mpi_exect 
+
+
+1.3 Run metgrid.exe: Very much the same as other simulation, save the met_em.d01.* files for later use to create PGW forcing.
+
+
+
+WRF 
+2.1 Run real.exe: Given that WRF namelist, can be found in my home, ln –sf the met_em.d01.* data from WPS 1.3 to one run_real directory. Run runreal.csh script to run real.exe and generate initial and boundary conditions. 
+
+2.2 Run wrf.exe: Note that in runreal and runwrf part, one additional note of extraoutput.txt file is needed. This file specifies the output variables to be extracted and generated for wrf2d and wrfxtrm for chosen time step.
+
+PGW forcing
+The only different in running CTL and PGW is that one more step is needed between 1.3 and 2.1. After running 1.3, met_em.d01.* metgrid files are generated for every 6 hours. Then the delta change from CMIP 5 RCP85 scenario model ensemble (2070-2099 30-year) – current climate (1970-1999) are added on the metgrid files generated from 1.3, using the ncl script interp_pgw_YYYY.ncl and run_ncl_YYYY.sh script. This step needs extra care to save the metgrid files from 1.3 and the delta-change-added metgrid files separatedly (don’t overwrite them). 
+Then take these metgrid files to run real.exe and wrf.exe, then this part is the same as CTL.
+
+Post-Process
+There are two codes doing post-process jobs they are: 
+make_WRF_2d_files_d01.csh  # actually this step is not necessary, as the extracted 2d field is of the requirement
+make_WRF_3d_files_d01.csh  # please see details in 
+
+Transfer data
+Data transfer are used Globus website. The user name is zhezhang, password is Zh512128043!
+From NCAR glade to Compute Canada Graham machine path: /scratch/zhezhang/store-data/CTL/YYYY
+The transfer process is quick. 
+one csh file for transfering data has also been created by Zhe Zhang
+see attachment
+
+Script location
+Most of the scripts and namelist are located in: /glade/p/work/zhezhang/CA4KM/script
+The make_pgw codes are in: /glade/p/work/zhezhang/make_pgw
+
+Computational time and resource 
+can be found in the google sheets on my google drive
+
+
+contact: 
+Zhe Zhang
+PhD student in University of Saskatchewan
+Email: zhe.zhang@usask.ca; zhezhang@ucar.edu
