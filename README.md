@@ -1,7 +1,7 @@
 ######       WRF_CCRN_note      ######   
-the note for running WRF for the CCRN domain and data README
-Created: Zhe Zhang 20171113
-Updated: Zhe Zhang 20180201
+the note for running WRF for the CCRN domain and data README;
+Created: Zhe Zhang 20171113;
+Updated: Zhe Zhang 20180201;
 
 ###### Special Thanks to Kyoko Ikeda, Liang Chen, Sopan Kurkute, who have created and contributed to the codes.
 
