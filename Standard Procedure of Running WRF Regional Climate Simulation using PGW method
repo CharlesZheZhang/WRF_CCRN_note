@@ -1,7 +1,8 @@
 Standard Procedure of Running WRF Regional Climate Simulation using PGW method
 
 Zhe Zhang
-2017-08-21
+Created: 2017-08-21
+Updated: 2018-02-01
 
 The purpose of this article is to introduce the methods and procedures used to run WRF simulation with PGW methods. A few scripts of submitting jobs and prepare PGW forcing and post-processing raw output are contributed by Liang Chen, Sopan Kurkute and Kyoko Ikeda, including (runungrib, runmetgrid, runreal, runwrf, generate_pgw_metgrid, wrf2d, wrf3d post-script, check output scripts (not available yet)) (namelist can also be found on my home directory, or Liang’s work directory)
 
